@@ -30,3 +30,11 @@ export const listTodos = /* GraphQL */ `
     }
   }
 `;
+
+export const getInterestedList = /* GraphQL */ `
+  query GetInterestedList($id: String!) {
+    getInterestedList(id: $id){
+      list
+    }
+  }
+`;

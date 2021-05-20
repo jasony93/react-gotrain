@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
 import { createTodo } from './graphql/mutations'
-import { listTodos } from './graphql/queries'
+import { listTodos, getInterestedList } from './graphql/queries'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 // import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
@@ -70,10 +70,28 @@ const App = () => {
     try{
       const {username} = await Auth.currentAuthenticatedUser();
       console.log(username)
+      return username
     } catch (error) {
       console.log("failed to get user info")
     }
     
+  }
+
+  async function fetchInterestedList() {
+
+    try {
+      const id = await getUsername()
+
+      console.log(id)
+
+      const variables = {
+        id: id
+      };
+      const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
+
+      // const interestedList = interestedListData.list;
+      console.log(interestedListData)
+    } catch (err) { console.log('error fetching intersted list:', err) }
   }
 
   return (
@@ -94,6 +112,8 @@ const App = () => {
       <button style={styles.button} onClick={addTodo}>Create Todo</button>
       <button style={styles.button} onClick={signOut}>Sign Out</button>
       <button style={styles.button} onClick={getUsername}>get user info </button>
+      <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button>
+      
       {
         todos.map((todo, index) => (
           <div key={todo.id ? todo.id : index} style={styles.todo}>

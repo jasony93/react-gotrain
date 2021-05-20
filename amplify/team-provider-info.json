@@ -1,25 +1,25 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-reactamplified-dev-220756-authRole",
-      "UnauthRoleArn": "arn:aws:iam::991322602225:role/amplify-reactamplified-dev-220756-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::991322602225:role/amplify-reactamplified-dev-220756-authRole",
+      "AuthRoleName": "amplify-reactgotrain-dev-232119-authRole",
+      "UnauthRoleArn": "arn:aws:iam::991322602225:role/amplify-reactgotrain-dev-232119-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::991322602225:role/amplify-reactgotrain-dev-232119-authRole",
       "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-reactamplified-dev-220756-deployment",
-      "UnauthRoleName": "amplify-reactamplified-dev-220756-unauthRole",
-      "StackName": "amplify-reactamplified-dev-220756",
-      "StackId": "arn:aws:cloudformation:us-east-1:991322602225:stack/amplify-reactamplified-dev-220756/bdf7d0c0-b647-11eb-b2d6-12dc044c8b8d",
-      "AmplifyAppId": "dj94v0lh81j22"
+      "DeploymentBucketName": "amplify-reactgotrain-dev-232119-deployment",
+      "UnauthRoleName": "amplify-reactgotrain-dev-232119-unauthRole",
+      "StackName": "amplify-reactgotrain-dev-232119",
+      "StackId": "arn:aws:cloudformation:us-east-1:991322602225:stack/amplify-reactgotrain-dev-232119/27c16d80-b71b-11eb-8f03-0e65b6fb18f9",
+      "AmplifyAppId": "d23dk61u7ybg5e"
     },
     "categories": {
+      "auth": {
+        "reactgotrain9aedcb2d": {}
+      },
       "hosting": {
         "amplifyhosting": {
-          "appId": "dj94v0lh81j22",
-          "type": "cicd"
+          "appId": "d23dk61u7ybg5e",
+          "type": "manual"
         }
-      },
-      "auth": {
-        "reactamplified4f8cc689": {}
       }
     }
   }
