@@ -5,6 +5,16 @@ import { createTodo } from './graphql/mutations'
 import { listTodos, getInterestedList } from './graphql/queries'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
+
+import testPage from "./testPage"
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+
+
 // import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
 
 import awsExports from "./aws-exports";
@@ -23,6 +33,7 @@ Amplify.configure(awsExports);
 
 
 const initialState = { name: '', description: '' }
+
 
 const App = () => {
   const [formState, setFormState] = useState(initialState)
@@ -113,6 +124,14 @@ const App = () => {
       <button style={styles.button} onClick={signOut}>Sign Out</button>
       <button style={styles.button} onClick={getUsername}>get user info </button>
       <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button>
+      <Router>
+        <Link to="/testPage">관심종목 모두 불러오기</Link>
+        <Switch>
+          <Route path="/testPage" component={testPage}>
+
+          </Route>
+        </Switch>
+      </Router>
       
       {
         todos.map((todo, index) => (
@@ -122,13 +141,14 @@ const App = () => {
           </div>
         ))
       }
+
     </div>
     
   )
 }
 
 const styles = {
-  container: { width: 400, margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 20 },
+  container: { width: "100%", margin: '0 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: 20 },
   todo: {  marginBottom: 15 },
   input: { border: 'none', backgroundColor: '#ddd', marginBottom: 10, padding: 8, fontSize: 18 },
   todoName: { fontSize: 20, fontWeight: 'bold' },
