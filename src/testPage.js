@@ -31,24 +31,6 @@ function createData(name, calories) {
   return { name, calories};
 }
 
-// const rows = [
-//   createData('Cupcake', 305),
-//   createData('Donut', 452),
-//   createData('Eclair', 262),
-//   createData('Frozen yoghurt', 159),
-//   createData('Gingerbread', 356),
-//   createData('Honeycomb', 408),
-//   createData('Ice cream sandwich', 237),
-//   createData('Jelly Bean', 375),
-//   createData('KitKat', 518),
-//   createData('Lollipop', 392),
-//   createData('Marshmallow', 318),
-//   createData('Nougat', 360),
-//   createData('Oreo', 437),
-// ];
-
-
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -229,7 +211,8 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [interested, setInterested] = React.useState();
+  // const [interested, setInterested] = React.useState();
+  const [rows, setRows] = React.useState([]);
 
   async function getUsername() {
     try{
@@ -250,7 +233,11 @@ export default function EnhancedTable() {
         id: id
       };
       const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
-      setInterested(interestedListData.data.getInterestedList.list);
+      const interestedList = interestedListData.data.getInterestedList.list;
+      const tempRows = interestedList.map((v) => {
+        return createData(v, 10)
+      })
+      setRows(tempRows)
 
       console.log(interestedListData.data.getInterestedList.list)
       
@@ -260,13 +247,6 @@ export default function EnhancedTable() {
   useEffect(() => {
     fetchInterestedList()
   }, [])
-
-  const rows = [
-      createData(interested[0], 100),
-      createData(interested[1], 50),
-      createData(interested[2], 30),
-  ];
-
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';

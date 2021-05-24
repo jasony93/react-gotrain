@@ -13,6 +13,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import RegisterButton from "./registerButton"
 
 
 // import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
@@ -107,7 +108,14 @@ const App = () => {
 
   return (
     <div style={styles.container}>
-      <h2>Amplify Todos</h2>
+      
+      <div style={styles.topBar}>
+        <button style={styles.button}>GoTrain</button>
+        <RegisterButton>신규등록</RegisterButton>
+        <button style={styles.logoutButton} onClick={signOut}>로그아웃</button>
+        {/* <button style={styles.button} onClick={getUsername}>get user info </button> */}
+      </div>
+      {/* <h2>Amplify Todos</h2>
       <input
         onChange={event => setInput('name', event.target.value)}
         style={styles.input}
@@ -119,11 +127,10 @@ const App = () => {
         style={styles.input}
         value={formState.description}
         placeholder="Description"
-      />
-      <button style={styles.button} onClick={addTodo}>Create Todo</button>
-      <button style={styles.button} onClick={signOut}>Sign Out</button>
-      <button style={styles.button} onClick={getUsername}>get user info </button>
-      <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button>
+      /> */}
+      {/* <button style={styles.button} onClick={addTodo}>Create Todo</button> */}
+      
+      {/* <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button> */}
       <Router>
         <Link to="/testPage">관심종목 모두 불러오기</Link>
         <Switch>
@@ -133,14 +140,14 @@ const App = () => {
         </Switch>
       </Router>
       
-      {
+      {/* {
         todos.map((todo, index) => (
           <div key={todo.id ? todo.id : index} style={styles.todo}>
             <p style={styles.todoName}>{todo.name}</p>
             <p style={styles.todoDescription}>{todo.description}</p>
           </div>
         ))
-      }
+      } */}
 
     </div>
     
@@ -153,7 +160,9 @@ const styles = {
   input: { border: 'none', backgroundColor: '#ddd', marginBottom: 10, padding: 8, fontSize: 18 },
   todoName: { fontSize: 20, fontWeight: 'bold' },
   todoDescription: { marginBottom: 0 },
-  button: { backgroundColor: 'black', color: 'white', outline: 'none', fontSize: 18, padding: '12px 0px' }
+  button: { backgroundColor: 'black', color: 'white', outline: 'none', fontSize: 18, padding: '12px 0px', width: '20%', height:'100%' },
+  topBar: { backgroundColor: 'black', color: 'white', fontSize: 16},
+  logoutButton: {backgroundColor: 'black', color: 'white', outline: 'none', fontSize: 18, padding: '12px 0px', width: '20%', height:'100%', align:'right'}
 }
 
 export default withAuthenticator(App)
