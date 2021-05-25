@@ -44,32 +44,22 @@ class Register extends Component {
           <div style={styles.modal}>
             <div onClick={close}>
               <div style={styles.loginModal}>
-                <span className="close" onClick={close}>
+                <button style={styles.close} onClick={close}>
                   &times;
-                </span>
-                <div className="modalContents" onClick={isOpen}>
-                  {/* <img
-                    className="signinIcon"
-                    src="/Images/SignIn/signinIcon.png"
-                  /> */}
+                </button>
+                <div style={styles.modalContents} onClick={isOpen}>
+                  
                   <input
                     name="email"
-                    className="loginId"
+                    style={styles.loginId}
                     type="text"
-                    placeholder="아이디"
+                    autoFocus
+                    placeholder="종목명"
                     onChange={this.loginHandler}
                   />
-                  <input
-                    name="password"
-                    className="loginPw"
-                    type="password"
-                    placeholder="비밀번호"
-                    onChange={this.loginHandler}
-                  />
-                  
-                  <button className="loginBtn" onClick={this.loginClickHandler}>
-                    {" "}
-                    등록{" "}
+
+                  <button style={styles.loginBtn} onClick={this.loginClickHandler}>
+                    등록
                   </button>
                   
                 </div>
@@ -83,8 +73,17 @@ class Register extends Component {
 }
 
 const styles = {
-    modal: {position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: "black"},
-    loginModal: {width: 480, height: 621, background: 'white', position: 'relative', margin: '50px auto', padding: '20px'}
+    modal: {position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(0,0,0,0.6)'},
+    loginModal: {width: 480, height: 80, background: 'white', position: 'relative', margin: '50px auto', padding: '20px', box: 'border-box'},
+    close: {float: 'right', font: 15, background: 'black', color: 'white'},
+    loginId: {margin: '10px auto', width: 100, height: 40, border: '1px solid #e5e5e5', padding: '6px 12px',},
+    loginBtn: {margin: '10px auto', height: 40, font: 14, padding: '13px 30px', cursor: 'pointer', background: "black", color: 'white'},
+    modalContents: {margin: '0px auto', width: '100%', position: 'relative', padding: '0 20px 32px', display: 'flex', justify: 'content', flex: 'column'}
+      // 
+      // 
+      // 
+      // outline: none,
+      // box-sizing: border-box},
 }
 
 export default Register;
