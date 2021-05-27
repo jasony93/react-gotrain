@@ -11,22 +11,29 @@ class Register extends Component {
   loginHandler = (e) => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
+    
   };   ////계산된 속성명 사용
 
+  buttonHandler = () => {
+    console.log('button clicked');
+  };
+
   loginClickHandler = () => {
-    const { email, password } = this.state;
-    fetch("http://10.58.2.17:8000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => console.log(res));
+
+    console.log('Login Button clicked');
+    // const { email, password } = this.state;
+    // fetch("http://10.58.2.17:8000/auth/login", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     email,
+    //     password,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => console.log(res));
   }; 
 
   render() {
@@ -57,9 +64,9 @@ class Register extends Component {
                     placeholder="종목명"
                     onChange={this.loginHandler}
                   />
-
-                  <button style={styles.loginBtn} onClick={this.loginClickHandler}>
-                    등록
+                  <button onClick={() => console.log("clicked!")}>테스트버튼</button>
+                  <button style={styles.loginBtn} onClick={() => console.log('clicked!')}>
+                    {"등록"}
                   </button>
                   
                 </div>
@@ -74,10 +81,10 @@ class Register extends Component {
 
 const styles = {
     modal: {position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(0,0,0,0.6)'},
-    loginModal: {width: 480, height: 80, background: 'white', position: 'relative', margin: '50px auto', padding: '20px', box: 'border-box'},
+    loginModal: {width: 480, height: 621, background: 'white', position: 'relative', margin: '50px auto', padding: '20px', box: 'border-box'},
     close: {float: 'right', font: 15, background: 'black', color: 'white'},
     loginId: {margin: '10px auto', width: 100, height: 40, border: '1px solid #e5e5e5', padding: '6px 12px',},
-    loginBtn: {margin: '10px auto', height: 40, font: 14, padding: '13px 30px', cursor: 'pointer', background: "black", color: 'white'},
+    loginBtn: {margin: '10px auto', height: 50, font: 14, padding: '13px 30px', cursor: 'pointer', background: "black", color: 'white'},
     modalContents: {margin: '0px auto', width: '100%', position: 'relative', padding: '0 20px 32px', display: 'flex', justify: 'content', flex: 'column'}
       // 
       // 

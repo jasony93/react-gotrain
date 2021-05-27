@@ -20,8 +20,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
-import { createTodo } from './graphql/mutations'
-import { listTodos, getInterestedList } from './graphql/queries'
+import { createTodo } from '../graphql/mutations'
+import { listTodos, getInterestedList } from '../graphql/queries'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 // import DeleteIcon from '@material-ui/icons/Delete';
@@ -154,7 +154,7 @@ const EnhancedTableToolbar = (props) => {
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-          Nutrition
+          종목표
         </Typography>
       )}
 
@@ -378,3 +378,4 @@ export default function EnhancedTable() {
     </div>
   );
 }
+

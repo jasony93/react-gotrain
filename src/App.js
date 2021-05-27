@@ -5,15 +5,20 @@ import { createTodo } from './graphql/mutations'
 import { listTodos, getInterestedList } from './graphql/queries'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
+import './App.css';
 
-import testPage from "./testPage"
+
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Link
 } from "react-router-dom";
-import RegisterButton from "./registerButton"
+
+import { Head } from './inc'
+import { stockList } from './inc'
+
+// import RegisterButton from "./registerButton"
 
 
 // import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
@@ -107,49 +112,59 @@ const App = () => {
   }
 
   return (
-    <div style={styles.container}>
-      
-      <div style={styles.topBar}>
-        <button style={styles.button}>GoTrain</button>
-        <RegisterButton>신규등록</RegisterButton>
-        <button style={styles.logoutButton} onClick={signOut}>로그아웃</button>
-        {/* <button style={styles.button} onClick={getUsername}>get user info </button> */}
-      </div>
-      {/* <h2>Amplify Todos</h2>
-      <input
-        onChange={event => setInput('name', event.target.value)}
-        style={styles.input}
-        value={formState.name}
-        placeholder="Name"
-      />
-      <input
-        onChange={event => setInput('description', event.target.value)}
-        style={styles.input}
-        value={formState.description}
-        placeholder="Description"
-      /> */}
-      {/* <button style={styles.button} onClick={addTodo}>Create Todo</button> */}
-      
-      {/* <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button> */}
-      <Router>
-        <Link to="/testPage">관심종목 모두 불러오기</Link>
+
+    <div>
+      <Head />
+      {stockList()}
+      {/* <Router>
+        <Link to="/inc/stockList">관심종목 모두 불러오기</Link>
         <Switch>
-          <Route path="/testPage" component={testPage}>
+          <Route path="/inc/stockList" component={stockList}>
 
           </Route>
         </Switch>
-      </Router>
-      
-      {/* {
-        todos.map((todo, index) => (
-          <div key={todo.id ? todo.id : index} style={styles.todo}>
-            <p style={styles.todoName}>{todo.name}</p>
-            <p style={styles.todoDescription}>{todo.description}</p>
-          </div>
-        ))
-      } */}
-
+      </Router> */}
     </div>
+    
+    // <div style={styles.container}>
+
+    //   <Head />
+      
+    //   <div style={styles.topBar}>
+        
+    //     <button style={styles.button}>GoTrain</button>
+    //     {/* <RegisterButton>신규등록</RegisterButton> */}
+    //     <button style={styles.logoutButton} onClick={signOut}>로그아웃</button>
+    //     {/* <button style={styles.button} onClick={getUsername}>get user info </button> */}
+    //   </div>
+    //   {/* <h2>Amplify Todos</h2>
+    //   <input
+    //     onChange={event => setInput('name', event.target.value)}
+    //     style={styles.input}
+    //     value={formState.name}
+    //     placeholder="Name"
+    //   />
+    //   <input
+    //     onChange={event => setInput('description', event.target.value)}
+    //     style={styles.input}
+    //     value={formState.description}
+    //     placeholder="Description"
+    //   /> */}
+    //   {/* <button style={styles.button} onClick={addTodo}>Create Todo</button> */}
+      
+    //   {/* <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button> */}
+      
+      
+    //   {/* {
+    //     todos.map((todo, index) => (
+    //       <div key={todo.id ? todo.id : index} style={styles.todo}>
+    //         <p style={styles.todoName}>{todo.name}</p>
+    //         <p style={styles.todoDescription}>{todo.description}</p>
+    //       </div>
+    //     ))
+    //   } */}
+
+    // </div>
     
   )
 }
