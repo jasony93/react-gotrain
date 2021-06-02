@@ -43,3 +43,14 @@ export const deleteTodo = /* GraphQL */ `
     }
   }
 `;
+
+export const updateInterestedList = /* GraphQL */ `
+  mutation UpdateInterestedList(
+    $input: UpdateInterestedListInput!
+  ) {
+    updateInterestedList(input: $input) {
+      id
+      list
+    }
+  }
+`;

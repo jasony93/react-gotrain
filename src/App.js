@@ -44,34 +44,39 @@ const initialState = { name: '', description: '' }
 const App = () => {
   const [formState, setFormState] = useState(initialState)
   const [todos, setTodos] = useState([])
+  const [selected, setSelected] = useState([])
+  // const [newSelected, setNewSelected] = useState([])
+  const property = {"selected": selected, "setSelected": setSelected}
+  // const test = 'test';
 
   useEffect(() => {
-    fetchTodos()
-  }, [])
+    console.log(selected)
+    // setNewSelected(selected)
+  }, [selected])
 
   function setInput(key, value) {
     setFormState({ ...formState, [key]: value })
   }
 
-  async function fetchTodos() {
-    try {
-      const todoData = await API.graphql(graphqlOperation(listTodos))
-      const todos = todoData.data.listTodos.items
-      setTodos(todos)
-    } catch (err) { console.log('error fetching todos') }
-  }
+  // async function fetchTodos() {
+  //   try {
+  //     const todoData = await API.graphql(graphqlOperation(listTodos))
+  //     const todos = todoData.data.listTodos.items
+  //     setTodos(todos)
+  //   } catch (err) { console.log('error fetching todos') }
+  // }
 
-  async function addTodo() {
-    try {
-      if (!formState.name || !formState.description) return
-      const todo = { ...formState }
-      setTodos([...todos, todo])
-      setFormState(initialState)
-      await API.graphql(graphqlOperation(createTodo, {input: todo}))
-    } catch (err) {
-      console.log('error creating todo:', err)
-    }
-  }
+  // async function addTodo() {
+  //   try {
+  //     if (!formState.name || !formState.description) return
+  //     const todo = { ...formState }
+  //     setTodos([...todos, todo])
+  //     setFormState(initialState)
+  //     await API.graphql(graphqlOperation(createTodo, {input: todo}))
+  //   } catch (err) {
+  //     console.log('error creating todo:', err)
+  //   }
+  // }
 
   async function signOut() {
     try {
@@ -114,47 +119,11 @@ const App = () => {
   return (
 
     <div>
-      <Head />
-      {stockList()}
-      {/* <Router>
-        <Link to="/inc/stockList">관심종목 모두 불러오기</Link>
-        <Switch>
-          <Route path="/inc/stockList" component={stockList}>
-
-          </Route>
-        </Switch>
-      </Router> */}
+      <Head selected={selected}/>
+      {/* <stockList /> */}
+      {stockList(property)}
     </div>
-    
-    // <div style={styles.container}>
 
-    //   <Head />
-      
-    //   <div style={styles.topBar}>
-        
-    //     <button style={styles.button}>GoTrain</button>
-    //     {/* <RegisterButton>신규등록</RegisterButton> */}
-    //     <button style={styles.logoutButton} onClick={signOut}>로그아웃</button>
-    //     {/* <button style={styles.button} onClick={getUsername}>get user info </button> */}
-    //   </div>
-    //   {/* <h2>Amplify Todos</h2>
-    //   <input
-    //     onChange={event => setInput('name', event.target.value)}
-    //     style={styles.input}
-    //     value={formState.name}
-    //     placeholder="Name"
-    //   />
-    //   <input
-    //     onChange={event => setInput('description', event.target.value)}
-    //     style={styles.input}
-    //     value={formState.description}
-    //     placeholder="Description"
-    //   /> */}
-    //   {/* <button style={styles.button} onClick={addTodo}>Create Todo</button> */}
-      
-    //   {/* <button style={styles.button} onClick={fetchInterestedList}>관심종목불러오기 </button> */}
-      
-      
     //   {/* {
     //     todos.map((todo, index) => (
     //       <div key={todo.id ? todo.id : index} style={styles.todo}>
@@ -163,8 +132,6 @@ const App = () => {
     //       </div>
     //     ))
     //   } */}
-
-    // </div>
     
   )
 }

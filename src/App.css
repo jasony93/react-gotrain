@@ -64,3 +64,24 @@
   margin: 10px;
   /* background-color: ; */
 }
+
+.btn_close {
+  text-align: center;
+  position: relative;
+  float: right;
+  margin: 10px;
+}
+
+.register_grid {
+  /* display: grid; */
+  grid-template-rows: 33% 33% auto;
+  border-bottom: solid 1px #ababab;
+}
+
+.register_input {
+  margin-top: 100px;
+}
+
+.btn_register {
+  margin-left: 20px;
+}

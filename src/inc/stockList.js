@@ -27,8 +27,10 @@ import { Auth } from 'aws-amplify';
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import FilterListIcon from '@material-ui/icons/FilterList';
 
-function createData(name, calories) {
-  return { name, calories};
+function createData(name, price, createdDate, port, purchasePrice, dailyChange, currentProfit, soldDate, soldPrice,
+  totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks) {
+  return { name, price, createdDate, port, purchasePrice, dailyChange, currentProfit, soldDate, soldPrice,
+    totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -59,10 +61,20 @@ function stableSort(array, comparator) {
 
 const headCells = [
   { id: 'name', numeric: false, disablePadding: true, label: '종목' },
-  { id: 'calories', numeric: true, disablePadding: false, label: '현재가' },
-//   { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-//   { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-//   { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
+  { id: 'price', numeric: true, disablePadding: true, label: '현재가' },
+  { id: 'createdDate', numeric: false, disablePadding: true, label: '입력날짜' },
+  { id: 'port', numeric: false, disablePadding: true, label: '포트' },
+  { id: 'purchasePrice', numeric: true, disablePadding: true, label: '매수가' },
+  { id: 'dailyChange', numeric: false, disablePadding: true, label: '당일변동률' },
+  { id: 'currentProfit', numeric: false, disablePadding: true, label: '현재수익률' },
+  { id: 'soldDate', numeric: false, disablePadding: true, label: '매도날짜' },
+  { id: 'soldPrice', numeric: true, disablePadding: true, label: '매도가' },
+  { id: 'totalProfit', numeric: false, disablePadding: true, label: '정산수익률' },
+  { id: 'targetPrice', numeric: true, disablePadding: true, label: '목표가' },
+  { id: 'cutoffPrice', numeric: true, disablePadding: true, label: '손절가' },
+  { id: 'weight', numeric: false, disablePadding: true, label: '비중' },
+  { id: 'targetProfit', numeric: false, disablePadding: true, label: '목표수익률' },
+  { id: 'remarks', numeric: false, disablePadding: true, label: '비고' },
 ];
 
 function EnhancedTableHead(props) {
@@ -85,9 +97,11 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            // align={headCell.numeric ? 'right' : 'left'}
+            align={'center'}
             padding={headCell.disablePadding ? 'none' : 'default'}
             sortDirection={orderBy === headCell.id ? order : false}
+            className={classes.tablecell}
           >
             <TableSortLabel
               active={orderBy === headCell.id}
@@ -201,15 +215,19 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  tablecell: {
+    fontSize: 12
+  }
 }));
 
-export default function EnhancedTable() {
+export default function EnhancedTable(props) {
+  // console.log(props.selected)
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
+  const [orderBy, setOrderBy] = React.useState('price');
+  // const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   // const [interested, setInterested] = React.useState();
   const [rows, setRows] = React.useState([]);
@@ -235,11 +253,12 @@ export default function EnhancedTable() {
       const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
       const interestedList = interestedListData.data.getInterestedList.list;
       const tempRows = interestedList.map((v) => {
-        return createData(v, 10)
+        return createData(v, 10, 'date', '포트', 9, '0.00%', '0.00%', 'sold date', 'sold price',
+        '0.00%', 20, 7, '5%', '10%', '메모')
       })
       setRows(tempRows)
 
-      console.log(interestedListData.data.getInterestedList.list)
+      // console.log(interestedListData.data.getInterestedList.list)
       
     } catch (err) { console.log('error fetching intersted list:', err) }
   }
@@ -257,30 +276,35 @@ export default function EnhancedTable() {
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = rows.map((n) => n.name);
-      setSelected(newSelecteds);
+      props.setSelected(newSelecteds);
       return;
     }
-    setSelected([]);
+    props.setSelected([]);
   };
 
   const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
+
+    
+    const selectedIndex = props.selected.indexOf(name);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(props.selected, name);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = newSelected.concat(props.selected.slice(1));
+    } else if (selectedIndex === props.selected.length - 1) {
+      newSelected = newSelected.concat(props.selected.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        props.selected.slice(0, selectedIndex),
+        props.selected.slice(selectedIndex + 1),
       );
     }
 
-    setSelected(newSelected);
+    props.setSelected(newSelected);
+
+    // console.log(newSelected)
+    // console.log(props)
   };
 
   const handleChangePage = (event, newPage) => {
@@ -296,14 +320,14 @@ export default function EnhancedTable() {
     setDense(event.target.checked);
   };
 
-  const isSelected = (name) => selected.indexOf(name) !== -1;
+  const isSelected = (name) => props.selected.indexOf(name) !== -1;
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={props.selected.length} />
         <TableContainer>
           <Table
             className={classes.table}
@@ -313,7 +337,7 @@ export default function EnhancedTable() {
           >
             <EnhancedTableHead
               classes={classes}
-              numSelected={selected.length}
+              numSelected={props.selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
@@ -346,16 +370,26 @@ export default function EnhancedTable() {
                       <TableCell component="th" id={labelId} scope="row" padding="none">
                         {row.name}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="center">{row.price}</TableCell>
+                      <TableCell align="center">{row.createdDate}</TableCell>
+                      <TableCell align="center">{row.port}</TableCell>
+                      <TableCell align="center">{row.purchasePrice}</TableCell>
+                      <TableCell align="center">{row.dailyChange}</TableCell>
+                      <TableCell align="center">{row.currentProfit}</TableCell>
+                      <TableCell align="center">{row.soldDate}</TableCell>
+                      <TableCell align="center">{row.soldPrice}</TableCell>
+                      <TableCell align="center">{row.totalProfit}</TableCell>
+                      <TableCell align="center">{row.targetPrice}</TableCell>
+                      <TableCell align="center">{row.cutoffPrice}</TableCell>
+                      <TableCell align="center">{row.weight}</TableCell>
+                      <TableCell align="center">{row.targetProfit}</TableCell>
+                      <TableCell align="center">{row.remarks}</TableCell>
                     </TableRow>
                   );
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={15} />
                 </TableRow>
               )}
             </TableBody>
