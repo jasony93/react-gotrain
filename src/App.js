@@ -7,14 +7,6 @@ import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 import './App.css';
 
-
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-
 import { Head } from './inc'
 import { stockList } from './inc'
 
@@ -38,12 +30,12 @@ Amplify.configure(awsExports);
 // Amplify.configure(myAppConfig);
 
 
-const initialState = { name: '', description: '' }
+// const initialState = { name: '', description: '' }
 
 
 const App = () => {
-  const [formState, setFormState] = useState(initialState)
-  const [todos, setTodos] = useState([])
+  // const [formState, setFormState] = useState(initialState)
+  // const [todos, setTodos] = useState([])
   const [selected, setSelected] = useState([])
   // const [newSelected, setNewSelected] = useState([])
   const property = {"selected": selected, "setSelected": setSelected}
@@ -54,9 +46,9 @@ const App = () => {
     // setNewSelected(selected)
   }, [selected])
 
-  function setInput(key, value) {
-    setFormState({ ...formState, [key]: value })
-  }
+  // function setInput(key, value) {
+  //   setFormState({ ...formState, [key]: value })
+  // }
 
   // async function fetchTodos() {
   //   try {
@@ -78,43 +70,43 @@ const App = () => {
   //   }
   // }
 
-  async function signOut() {
-    try {
-        await Auth.signOut({ global: true });
-    } catch (error) {
-        console.log('error signing out: ', error);
-    }
+  // async function signOut() {
+  //   try {
+  //       await Auth.signOut({ global: true });
+  //   } catch (error) {
+  //       console.log('error signing out: ', error);
+  //   }
 
-    window.location.reload();
-  }
+  //   window.location.reload();
+  // }
 
-  async function getUsername() {
-    try{
-      const {username} = await Auth.currentAuthenticatedUser();
-      console.log(username)
-      return username
-    } catch (error) {
-      console.log("failed to get user info")
-    }
+  // async function getUsername() {
+  //   try{
+  //     const {username} = await Auth.currentAuthenticatedUser();
+  //     console.log(username)
+  //     return username
+  //   } catch (error) {
+  //     console.log("failed to get user info")
+  //   }
     
-  }
+  // }
 
-  async function fetchInterestedList() {
+  // async function fetchInterestedList() {
 
-    try {
-      const id = await getUsername()
+  //   try {
+  //     const id = await getUsername()
 
-      console.log(id)
+  //     console.log(id)
 
-      const variables = {
-        id: id
-      };
-      const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
+  //     const variables = {
+  //       id: id
+  //     };
+  //     const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
 
-      // const interestedList = interestedListData.list;
-      console.log(interestedListData)
-    } catch (err) { console.log('error fetching intersted list:', err) }
-  }
+  //     // const interestedList = interestedListData.list;
+  //     console.log(interestedListData)
+  //   } catch (err) { console.log('error fetching intersted list:', err) }
+  // }
 
   return (
 

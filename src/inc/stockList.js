@@ -24,8 +24,16 @@ import { createTodo } from '../graphql/mutations'
 import { listTodos, getInterestedList } from '../graphql/queries'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
+import proxy from '../utils/proxy'
+// const request = require('request');
+
+// import getSinglePrice from '../utils/crawling'
 // import DeleteIcon from '@material-ui/icons/Delete';
 // import FilterListIcon from '@material-ui/icons/FilterList';
+
+const axios = require("axios");
+const cheerio = require("cheerio");
+
 
 function createData(name, price, createdDate, port, purchasePrice, dailyChange, currentProfit, soldDate, soldPrice,
   totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks) {
@@ -231,6 +239,7 @@ export default function EnhancedTable(props) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   // const [interested, setInterested] = React.useState();
   const [rows, setRows] = React.useState([]);
+  const [renew, setRenew] = React.useState(0)
 
   async function getUsername() {
     try{
@@ -252,20 +261,52 @@ export default function EnhancedTable(props) {
       };
       const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
       const interestedList = interestedListData.data.getInterestedList.list;
-      const tempRows = interestedList.map((v) => {
-        return createData(v, 10, 'date', '포트', 9, '0.00%', '0.00%', 'sold date', 'sold price',
-        '0.00%', 20, 7, '5%', '10%', '메모')
+      let requestUrl = "http://3.36.49.209:5000/marketeye?";
+
+      interestedList.map((v) => {
+
+        requestUrl += "code=A" + v + "&"
+
       })
+
+
+      requestUrl = requestUrl.slice(0, requestUrl.length - 1)
+      let stockList = await axios.get(requestUrl);
+      stockList = stockList["data"];
+
+      const tempRows = stockList.map((data) => {
+        let dailyChange = "";
+        if(data["현재가"] > data["시가"]){
+          let change = data["현재가"] - data["시가"];
+          let changeRate = (change / data["시가"]) * 100;
+          changeRate = changeRate.toFixed(2);
+          dailyChange = "+" + String(changeRate) + "%";
+        }else if(data["현재가"] < data["시가"]){
+          let change = data["시가"] - data["현재가"];
+          let changeRate = (change / data["시가"]) * 100;
+          changeRate = changeRate.toFixed(2);
+          dailyChange = "-" + String(changeRate) + "%";
+        }else{
+          dailyChange = "0.00%"
+        }
+
+        return createData(data["종목명"], data["현재가"], '?', '?', 0, dailyChange, '?', '?', '?',
+        '?', 0, 0, '?', '?', '?')
+      })
+
       setRows(tempRows)
 
-      // console.log(interestedListData.data.getInterestedList.list)
       
     } catch (err) { console.log('error fetching intersted list:', err) }
   }
 
   useEffect(() => {
     fetchInterestedList()
-  }, [])
+  }, [renew])
+
+  // componentDidMount() {
+  //   fetchInterestedList()
+  // }
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
