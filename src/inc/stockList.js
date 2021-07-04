@@ -261,7 +261,7 @@ export default function EnhancedTable(props) {
       };
       const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
       const interestedList = interestedListData.data.getInterestedList.list;
-      let requestUrl = "http://3.36.49.209:5000/marketeye?";
+      let requestUrl = "https://3.36.49.209:5000/marketeye?";
 
       interestedList.map((v) => {
 
