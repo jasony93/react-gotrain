@@ -10,10 +10,6 @@ import './App.css';
 import { Head } from './inc'
 import { stockList } from './inc'
 
-// import RegisterButton from "./registerButton"
-
-
-// import * as AmazonCognitoIdentity from "amazon-cognito-identity-js";
 
 import awsExports from "./aws-exports";
 Amplify.configure(awsExports);
@@ -30,12 +26,8 @@ Amplify.configure(awsExports);
 // Amplify.configure(myAppConfig);
 
 
-// const initialState = { name: '', description: '' }
-
-
 const App = () => {
-  // const [formState, setFormState] = useState(initialState)
-  // const [todos, setTodos] = useState([])
+
   const [selected, setSelected] = useState([])
   // const [newSelected, setNewSelected] = useState([])
   const property = {"selected": selected, "setSelected": setSelected}
@@ -46,67 +38,6 @@ const App = () => {
     // setNewSelected(selected)
   }, [selected])
 
-  // function setInput(key, value) {
-  //   setFormState({ ...formState, [key]: value })
-  // }
-
-  // async function fetchTodos() {
-  //   try {
-  //     const todoData = await API.graphql(graphqlOperation(listTodos))
-  //     const todos = todoData.data.listTodos.items
-  //     setTodos(todos)
-  //   } catch (err) { console.log('error fetching todos') }
-  // }
-
-  // async function addTodo() {
-  //   try {
-  //     if (!formState.name || !formState.description) return
-  //     const todo = { ...formState }
-  //     setTodos([...todos, todo])
-  //     setFormState(initialState)
-  //     await API.graphql(graphqlOperation(createTodo, {input: todo}))
-  //   } catch (err) {
-  //     console.log('error creating todo:', err)
-  //   }
-  // }
-
-  // async function signOut() {
-  //   try {
-  //       await Auth.signOut({ global: true });
-  //   } catch (error) {
-  //       console.log('error signing out: ', error);
-  //   }
-
-  //   window.location.reload();
-  // }
-
-  // async function getUsername() {
-  //   try{
-  //     const {username} = await Auth.currentAuthenticatedUser();
-  //     console.log(username)
-  //     return username
-  //   } catch (error) {
-  //     console.log("failed to get user info")
-  //   }
-    
-  // }
-
-  // async function fetchInterestedList() {
-
-  //   try {
-  //     const id = await getUsername()
-
-  //     console.log(id)
-
-  //     const variables = {
-  //       id: id
-  //     };
-  //     const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
-
-  //     // const interestedList = interestedListData.list;
-  //     console.log(interestedListData)
-  //   } catch (err) { console.log('error fetching intersted list:', err) }
-  // }
 
   return (
 
@@ -116,15 +47,6 @@ const App = () => {
       {stockList(property)}
     </div>
 
-    //   {/* {
-    //     todos.map((todo, index) => (
-    //       <div key={todo.id ? todo.id : index} style={styles.todo}>
-    //         <p style={styles.todoName}>{todo.name}</p>
-    //         <p style={styles.todoDescription}>{todo.description}</p>
-    //       </div>
-    //     ))
-    //   } */}
-    
   )
 }
 

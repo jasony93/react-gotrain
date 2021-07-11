@@ -73,15 +73,19 @@
 }
 
 .register_grid {
-  /* display: grid; */
-  grid-template-rows: 33% 33% auto;
+  display: grid;
+  /* grid-template-rows: 15% 15% auto; */
   border-bottom: solid 1px #ababab;
+  margin-top: 30px;
 }
 
 .register_input {
-  margin-top: 100px;
+  height: 20px;
+  margin-top: 5px;
+  margin-left: 20px;
 }
 
 .btn_register {
+  margin-top: 20px;
   margin-left: 20px;
 }

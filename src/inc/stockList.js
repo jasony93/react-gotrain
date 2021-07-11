@@ -162,7 +162,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected } = props;
+  const { numSelected, selected } = props;
 
   return (
     <Toolbar
@@ -172,7 +172,7 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {numSelected} selected {selected}
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
@@ -236,7 +236,7 @@ export default function EnhancedTable(props) {
   // const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(true);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   // const [interested, setInterested] = React.useState();
   const [rows, setRows] = React.useState([]);
   const [renew, setRenew] = React.useState(0)
@@ -261,7 +261,7 @@ export default function EnhancedTable(props) {
       };
       const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
       const interestedList = interestedListData.data.getInterestedList.list;
-      let requestUrl = "https://3.36.49.209:5000/marketeye?";
+      let requestUrl = "http://3.36.49.209:5000/marketeye?";
 
       interestedList.map((v) => {
 
@@ -368,7 +368,7 @@ export default function EnhancedTable(props) {
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={props.selected.length} />
+        <EnhancedTableToolbar numSelected={props.selected.length} selected={props.selected}/>
         <TableContainer>
           <Table
             className={classes.table}
@@ -437,7 +437,7 @@ export default function EnhancedTable(props) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[5,10,25]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}

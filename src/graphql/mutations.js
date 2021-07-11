@@ -54,3 +54,24 @@ export const updateInterestedList = /* GraphQL */ `
     }
   }
 `;
+
+export const createInterestedInfo = /* GraphQL */ `
+  mutation CreateInterestedInfo(
+    $input: CreateInterestedInfoInput!
+  ) {
+    createInterestedInfo(input: $input) {
+      id
+      createdDate
+      cutoffPrice
+      port
+      purchasePrice
+      remarks
+      soldDate
+      soldPrice
+      targetPrice
+      targetProfit
+      totalProfit
+      weight
+    }
+  }
+`;
