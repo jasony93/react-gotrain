@@ -38,3 +38,20 @@ export const getInterestedList = /* GraphQL */ `
     }
   }
 `;
+
+export const getInterestedInfo = /* GraphQL */ `
+  query GetInterestedInfo($id: String!) {
+    getInterestedInfo(id: $id){
+      createdDate
+      cutoffPrice
+      port
+      purchasePrice
+      remarks
+      soldDate
+      targetPrice
+      targetProfit
+      totalProfit
+      weight
+    }
+  }
+`;

@@ -21,7 +21,7 @@ import Switch from '@material-ui/core/Switch';
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
 import { createTodo } from '../graphql/mutations'
-import { listTodos, getInterestedList } from '../graphql/queries'
+import { listTodos, getInterestedList, getInterestedInfo } from '../graphql/queries'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 import proxy from '../utils/proxy'
@@ -240,6 +240,7 @@ export default function EnhancedTable(props) {
   // const [interested, setInterested] = React.useState();
   const [rows, setRows] = React.useState([]);
   const [renew, setRenew] = React.useState(0)
+  const [info, setInfo] = React.useState();
 
   async function getUsername() {
     try{
@@ -252,6 +253,24 @@ export default function EnhancedTable(props) {
     
   }
 
+  async function fetchInterestedInfo(code) {
+    
+    try {
+      const variables = {
+        id: code
+      };
+
+      const interestedInfoData = await API.graphql(graphqlOperation(getInterestedInfo, variables));
+      const interestedInfo = interestedInfoData.data.getInterestedInfo
+
+      // console.log(interestedInfo)
+      return interestedInfo
+      // setInfo(interestedInfo)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   async function fetchInterestedList() {
 
     try {
@@ -261,7 +280,7 @@ export default function EnhancedTable(props) {
       };
       const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
       const interestedList = interestedListData.data.getInterestedList.list;
-      let requestUrl = "http://3.36.49.209:5000/marketeye?";
+      let requestUrl = "https://3.36.49.209:5000/marketeye?";
 
       interestedList.map((v) => {
 
@@ -274,7 +293,10 @@ export default function EnhancedTable(props) {
       let stockList = await axios.get(requestUrl);
       stockList = stockList["data"];
 
-      const tempRows = stockList.map((data) => {
+      let tempRows = [];
+
+      for(let i = 0; i < stockList.length; i++){
+        const data = stockList[i];
         let dailyChange = "";
         if(data["현재가"] > data["시가"]){
           let change = data["현재가"] - data["시가"];
@@ -289,10 +311,49 @@ export default function EnhancedTable(props) {
         }else{
           dailyChange = "0.00%"
         }
+        
+        const code = data["종목코드"].substring(1, data["종목코드"].length)
+        const info = await fetchInterestedInfo(code)
+        
+        if (info !== null){
+          tempRows.push(createData(data["종목명"], data["현재가"], info["createdDate"], info["port"], 0, dailyChange, '?', 'soldDate', 'soldPrice',
+          'totalProfit', 0, 0, 'weight', 'targetProfit', 'remarks'))
+          // console.log(info)
+        } else{
+          tempRows.push(createData(data["종목명"], data["현재가"], '?', '?', 0, dailyChange, '?', '?', '?',
+          '?', 0, 0, '?', '?', '?'))
+        }
+        
+      }
 
-        return createData(data["종목명"], data["현재가"], '?', '?', 0, dailyChange, '?', '?', '?',
-        '?', 0, 0, '?', '?', '?')
-      })
+      // const tempRows = stockList.map((data) => {
+      //   // console.log("stock code: " + data["종목코드"])
+      //   let dailyChange = "";
+      //   if(data["현재가"] > data["시가"]){
+      //     let change = data["현재가"] - data["시가"];
+      //     let changeRate = (change / data["시가"]) * 100;
+      //     changeRate = changeRate.toFixed(2);
+      //     dailyChange = "+" + String(changeRate) + "%";
+      //   }else if(data["현재가"] < data["시가"]){
+      //     let change = data["시가"] - data["현재가"];
+      //     let changeRate = (change / data["시가"]) * 100;
+      //     changeRate = changeRate.toFixed(2);
+      //     dailyChange = "-" + String(changeRate) + "%";
+      //   }else{
+      //     dailyChange = "0.00%"
+      //   }
+
+      //   const code = data["종목코드"].substring(1, data["종목코드"].length)
+      //   // console.log("stock code: " + code)
+
+        
+
+      //   return createData(data["종목명"], data["현재가"], '?', '?', 0, dailyChange, '?', '?', '?',
+      //   '?', 0, 0, '?', '?', '?')
+
+      //   // return createData(data["종목명"], data["현재가"], ((info['createdDate'] != undefined) ? info['createdDate'] : ""), '?', 0, dailyChange, '?', '?', '?',
+      //   // '?', 0, 0, '?', '?', '?')
+      // })
 
       setRows(tempRows)
 
