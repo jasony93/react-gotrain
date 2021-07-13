@@ -36,9 +36,9 @@ const cheerio = require("cheerio");
 
 
 function createData(name, price, createdDate, port, purchasePrice, dailyChange, currentProfit, soldDate, soldPrice,
-  totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks) {
+  totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks, code) {
   return { name, price, createdDate, port, purchasePrice, dailyChange, currentProfit, soldDate, soldPrice,
-    totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks};
+    totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks, code};
 }
 
 function descendingComparator(a, b, orderBy) {
@@ -316,12 +316,34 @@ export default function EnhancedTable(props) {
         const info = await fetchInterestedInfo(code)
         
         if (info !== null){
-          tempRows.push(createData(data["종목명"], data["현재가"], info["createdDate"], info["port"], 0, dailyChange, '?', 'soldDate', 'soldPrice',
-          'totalProfit', 0, 0, 'weight', 'targetProfit', 'remarks'))
+          let currentProfit = '';
+          let totalProfit = '';
+
+          if (info['purchasePrice'] !== null && info['purchasePrice'] !== ''){
+            const purchasePrice = parseInt(info["purchasePrice"]);
+            currentProfit = (data["현재가"] - purchasePrice) * 100 / purchasePrice;
+            currentProfit = currentProfit.toFixed(2);
+            currentProfit = (currentProfit > 0) ? "+" + currentProfit : currentProfit;
+            currentProfit += "%";
+
+            if (info['soldPrice'] !== '' && info['soldPrice'] !== undefined) {
+              console.log('sold price: ' + info['soldPrice'])
+              const soldPrice = parseInt(info['soldPrice']);
+              totalProfit = (soldPrice - purchasePrice) * 100 / purchasePrice;
+              totalProfit = totalProfit.toFixed(2);
+              totalProfit = (totalProfit > 0) ? "+" + totalProfit : totalProfit;
+              totalProfit += "%";
+            }
+
+          }
+          
+
+          tempRows.push(createData(data["종목명"], data["현재가"], info["createdDate"], info["port"], info["purchasePrice"], dailyChange, currentProfit, info['soldDate'], info['soldPrice'],
+          totalProfit, 0, 0, info['weight'], info['targetProfit'], info['remarks'], code))
           // console.log(info)
         } else{
-          tempRows.push(createData(data["종목명"], data["현재가"], '?', '?', 0, dailyChange, '?', '?', '?',
-          '?', 0, 0, '?', '?', '?'))
+          tempRows.push(createData(data["종목명"], data["현재가"], '', '', '', '', '', '', '',
+          '', '', '', '', '', '', code))
         }
         
       }
@@ -450,13 +472,13 @@ export default function EnhancedTable(props) {
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.code);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.code)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}

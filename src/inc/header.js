@@ -124,6 +124,8 @@ async function registerInterestedInfo() {
 
 async function deleteSelected(selected) {
 
+    console.log(selected)
+
     if (selected.length === 0) {
         console.log("please select something")
         return
