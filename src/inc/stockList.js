@@ -339,10 +339,10 @@ export default function EnhancedTable(props) {
           
 
           tempRows.push(createData(data["종목명"], data["현재가"], info["createdDate"], info["port"], info["purchasePrice"], dailyChange, currentProfit, info['soldDate'], info['soldPrice'],
-          totalProfit, 0, 0, info['weight'], info['targetProfit'], info['remarks'], code))
+          totalProfit, info['targetPrice'], info['cutoffPrice'], info['weight'], info['targetProfit'], info['remarks'], code))
           // console.log(info)
         } else{
-          tempRows.push(createData(data["종목명"], data["현재가"], '', '', '', '', '', '', '',
+          tempRows.push(createData(data["종목명"], data["현재가"], '', '', '', dailyChange, '', '', '',
           '', '', '', '', '', '', code))
         }
         
