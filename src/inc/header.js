@@ -219,7 +219,7 @@ class header extends Component {
                                 }}/>   
 
                         </Modal>
-                    <input type='button' value='삭제' className='btn_header' onClick={() => {deleteSelected(this.props.selected)}}/>
+                    {/* <input type='button' value='삭제' className='btn_header' onClick={() => {deleteSelected(this.props.selected)}}/> */}
                     <button className='btn_header' onClick={signOut}>로그아웃</button>
                 </div>
          

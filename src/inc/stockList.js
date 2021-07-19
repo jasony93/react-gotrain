@@ -22,6 +22,7 @@ import Switch from '@material-ui/core/Switch';
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
 import { createTodo } from '../graphql/mutations'
 import { listTodos, getInterestedList, getInterestedInfo } from '../graphql/queries'
+import {updateInterestedList, createInterestedInfo} from '../graphql/mutations'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 import proxy from '../utils/proxy'
@@ -160,9 +161,66 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
+async function getUsername() {
+  try{
+    const {username} = await Auth.currentAuthenticatedUser();
+    console.log(username)
+    return username
+  } catch (error) {
+  //   console.log("failed to get user info")
+  }
+  
+}
+
+async function fetchInterestedList() {
+
+  try {
+      const id = await getUsername()
+      const variables = {
+          id: id
+      };
+      const interestedListData = await API.graphql(graphqlOperation(getInterestedList, variables));
+      const interestedList = interestedListData.data.getInterestedList.list;
+      
+      return interestedList
+      
+  } catch (err) { console.log('error fetching intersted list:', err) }
+}
+
+async function deleteSelected(selected) {
+
+  console.log(selected)
+
+  if (selected.length === 0) {
+      console.log("please select something")
+      return
+  }
+
+  try {
+      const interestedList = await fetchInterestedList();
+      const id = await getUsername();
+
+      const removedList = interestedList.filter(function(value, index, arr){
+          return !selected.includes(value);
+      })
+
+      const variables = {
+          input: {
+              id: id,
+              list: removedList
+          }
+      };
+      
+      await API.graphql(graphqlOperation(updateInterestedList, variables));
+      
+  } catch (err) { console.log('error registering:', err) }
+
+  window.location.reload();
+}
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, selected } = props;
+  const { numSelected, selected } = props
 
   return (
     <Toolbar
@@ -173,6 +231,9 @@ const EnhancedTableToolbar = (props) => {
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected {selected}
+          <input type='button' value='삭제' className='btn_header' onClick={() => {deleteSelected(selected)}}/>
+          {numSelected === 1 ? (<input type='button' value='수정' className='btn_header' onClick={() => {console.log("수정")}}/>) : <></>}
+          {/* <input type='button' value='수정' className='btn_header' onClick={() => {console.log("수정")}}/> */}
         </Typography>
       ) : (
         <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
@@ -272,6 +333,8 @@ export default function EnhancedTable(props) {
   }
 
   async function fetchInterestedList() {
+
+    console.log('fetchInterestedList started...')
 
     try {
       const id = await getUsername()
@@ -381,10 +444,16 @@ export default function EnhancedTable(props) {
 
       
     } catch (err) { console.log('error fetching intersted list:', err) }
+
+    console.log('fetchInterestedList ended...')
   }
 
   useEffect(() => {
     fetchInterestedList()
+
+    // 현재가 변경
+    // setInterval(() => fetchInterestedList(), 60000)
+
   }, [renew])
 
   // componentDidMount() {
