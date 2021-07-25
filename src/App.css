@@ -75,8 +75,17 @@
 .register_grid {
   display: grid;
   /* grid-template-rows: 15% 15% auto; */
-  border-bottom: solid 1px #ababab;
+  /* border-bottom: solid 1px #ababab; */
   margin-top: 30px;
+}
+
+.modify_grid {
+  display: grid;
+  /* grid-template-columns: 1fr 2fr; */
+  /* border-bottom: solid 1px #ababab; */
+  margin-top: 30px;
+  margin-right: 20px;
+  /* width: 400px; */
 }
 
 .register_input {
@@ -85,7 +94,23 @@
   margin-left: 20px;
 }
 
+.modify_input {
+  height: 20px;
+  margin-top: 5px;
+  margin-left: 10px;
+}
+
+.modify_attribute {
+  display: flex;
+  width: 500px;
+  margin-left: 20px;
+}
+
 .btn_register {
   margin-top: 20px;
   margin-left: 20px;
+}
+
+.attribute_label {
+  width: 100px;
 }

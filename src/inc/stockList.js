@@ -18,11 +18,12 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
+import Modal from 'react-awesome-modal';
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
 import { createTodo } from '../graphql/mutations'
 import { listTodos, getInterestedList, getInterestedInfo } from '../graphql/queries'
-import {updateInterestedList, createInterestedInfo} from '../graphql/mutations'
+import {updateInterestedList, createInterestedInfo, updateInterestedInfo} from '../graphql/mutations'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 import proxy from '../utils/proxy'
@@ -172,6 +173,24 @@ async function getUsername() {
   
 }
 
+async function fetchInterestedInfo(code) {
+    
+  try {
+    const variables = {
+      id: code
+    };
+
+    const interestedInfoData = await API.graphql(graphqlOperation(getInterestedInfo, variables));
+    const interestedInfo = interestedInfoData.data.getInterestedInfo
+
+    // console.log(interestedInfo)
+    return interestedInfo
+    // setInfo(interestedInfo)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 async function fetchInterestedList() {
 
   try {
@@ -218,9 +237,69 @@ async function deleteSelected(selected) {
   window.location.reload();
 }
 
+async function modifyInterestedInfo() {
+
+  const code = document.getElementById("modify_code").value;
+  const registerDate = document.getElementById("modify_date").value;
+  const port = document.getElementById("modify_port").value;
+  const purchasePrice = document.getElementById("modify_price").value;
+  const soldDate = document.getElementById("modify_sold_date").value;
+  const soldPrice = document.getElementById("modify_sold_price").value;
+  const targetPrice = document.getElementById("modify_target_price").value;
+  const cutoffPrice = document.getElementById("modify_cutoff_price").value;
+  const weight = document.getElementById("modify_weight").value;
+  const targetProfit = document.getElementById("modify_target_profit").value;
+  const totalProfit = document.getElementById("modify_total_profit").value;
+  const remarks = document.getElementById("modify_remarks").value;
+
+  try {
+    const variables = {
+      input: {
+          id: code,
+          createdDate: registerDate,
+          cutoffPrice: cutoffPrice,
+          port: port,
+          purchasePrice: purchasePrice,
+          remarks: remarks,
+          soldDate: soldDate,
+          soldPrice: soldPrice,
+          targetPrice: targetPrice,
+          targetProfit: targetProfit,
+          totalProfit: totalProfit,
+          weight: weight
+      }
+    };
+      
+      await API.graphql(graphqlOperation(updateInterestedInfo, variables));
+      
+  } catch (err) { console.log('error registering:', err) }
+
+  window.location.reload();
+}
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, selected } = props
+  const { numSelected, selected } = props;
+  const [visible, setVisible] = React.useState(false);
+  const [modifying, setModifying] = React.useState();
+
+  async function _openModal(selected) {
+      
+      const info = await fetchInterestedInfo(String(selected))
+      // console.log("selected: " + selected)
+      // console.log("selected: " + info["purchasePrice"])
+      console.log("modal info: " + info)
+      setModifying(info)
+      setVisible(true)
+  }
+
+  const _closeModal = () => {
+      // state = {
+      //   visible : false,
+      //   selected : selected
+      // }
+      setVisible(false)
+  }
 
   return (
     <Toolbar
@@ -232,7 +311,71 @@ const EnhancedTableToolbar = (props) => {
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
           {numSelected} selected {selected}
           <input type='button' value='삭제' className='btn_header' onClick={() => {deleteSelected(selected)}}/>
-          {numSelected === 1 ? (<input type='button' value='수정' className='btn_header' onClick={() => {console.log("수정")}}/>) : <></>}
+          {numSelected === 1 ? (<button className='btn_header' onClick={() => {_openModal(selected)}}>수정</button>) : <></>}
+          <div className='acenter'>
+          <Modal visible={visible} width="400" height="450" effect="fadeInDown" onClickAway={() => {_closeModal()}}>
+            
+              <div className='acenter'>
+                <input className='btn_close' value='X' type='button' onClick={() => {_closeModal()}} />
+              </div>
+
+              <div className='modify_grid'>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>종목코드 </div>
+                    
+                    <input className='modify_input' defaultValue={String(selected)} id="modify_code"/>
+                  </div> 
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>입력일자 </div>
+                    <input type="text" className='modify_input' defaultValue={modifying ? modifying["createdDate"] : ""} id="modify_date"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>포트 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["port"] : ""} id="modify_port"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>매수가 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["purchasePrice"] : ""} id="modify_price"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>매도일자 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["soldDate"] : ""} id="modify_sold_date"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>매도가 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["soldPrice"] : ""} id="modify_sold_price"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>정산수익률 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["totalProfit"] : ""} id="modify_total_profit"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>목표가 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["targetPrice"] : ""} id="modify_target_price"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>손절가 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["cutoffPrice"] : ""} id="modify_cutoff_price"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>비중 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["weight"] : ""} id="modify_weight"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>목표수익률 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["targetProfit"] : ""} id="modify_target_profit"/>
+                  </div>
+                  <div className='modify_attribute'>
+                    <div className='attribute_label'>비고 </div>
+                    <input className='modify_input' defaultValue={modifying ? modifying["remarks"] : ""} id="modify_remarks"/>
+                  </div>
+                   
+              </div>
+
+              <input className='btn_register' value='수정' type='button' onClick={() => modifyInterestedInfo()}/>
+               
+          </Modal>
+          </div>
           {/* <input type='button' value='수정' className='btn_header' onClick={() => {console.log("수정")}}/> */}
         </Typography>
       ) : (
@@ -361,6 +504,7 @@ export default function EnhancedTable(props) {
       for(let i = 0; i < stockList.length; i++){
         const data = stockList[i];
         let dailyChange = "";
+        // console.log("시가: " + data["시가"])
         if(data["현재가"] > data["시가"]){
           let change = data["현재가"] - data["시가"];
           let changeRate = (change / data["시가"]) * 100;
@@ -390,7 +534,7 @@ export default function EnhancedTable(props) {
             currentProfit += "%";
 
             if (info['soldPrice'] !== '' && info['soldPrice'] !== undefined) {
-              console.log('sold price: ' + info['soldPrice'])
+              // console.log('sold price: ' + info['soldPrice'])
               const soldPrice = parseInt(info['soldPrice']);
               totalProfit = (soldPrice - purchasePrice) * 100 / purchasePrice;
               totalProfit = totalProfit.toFixed(2);

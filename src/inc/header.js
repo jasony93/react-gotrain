@@ -93,9 +93,6 @@ async function registerInterestedInfo() {
 
 
     try {
-        // const interestedList = await fetchInterestedList();
-        // const id = await getUsername();
-        // interestedList.push(inputVal);
 
         console.log(code)
         const variables = {
