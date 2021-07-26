@@ -23,7 +23,7 @@ import Modal from 'react-awesome-modal';
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
 import { createTodo } from '../graphql/mutations'
 import { listTodos, getInterestedList, getInterestedInfo } from '../graphql/queries'
-import {updateInterestedList, createInterestedInfo, updateInterestedInfo} from '../graphql/mutations'
+import {updateInterestedList, createInterestedInfo, updateInterestedInfo, deleteInterestedInfo} from '../graphql/mutations'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { Auth } from 'aws-amplify';
 import proxy from '../utils/proxy'
@@ -34,8 +34,6 @@ import proxy from '../utils/proxy'
 // import FilterListIcon from '@material-ui/icons/FilterList';
 
 const axios = require("axios");
-const cheerio = require("cheerio");
-
 
 function createData(name, price, createdDate, port, purchasePrice, dailyChange, currentProfit, soldDate, soldPrice,
   totalProfit, targetPrice, cutoffPrice, weight, targetProfit, remarks, code) {
@@ -216,6 +214,19 @@ async function deleteSelected(selected) {
   }
 
   try {
+
+      for(let i = 0; i < selected.length; i++){
+
+        const variables = {
+          input: {
+            id: selected[i]
+          }
+        }
+
+        await API.graphql(graphqlOperation(deleteInterestedInfo, variables));
+        
+      }
+
       const interestedList = await fetchInterestedList();
       const id = await getUsername();
 

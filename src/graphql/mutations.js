@@ -96,3 +96,13 @@ export const updateInterestedInfo = /* GraphQL */ `
     }
   }
 `;
+
+export const deleteInterestedInfo = /* GraphQL */ `
+  mutation DeleteInterestedInfo(
+    $input: DeleteInterestedInfoInput!
+  ) {
+    deleteInterestedInfo(input: $input) {
+      id
+    }
+  }
+`;
