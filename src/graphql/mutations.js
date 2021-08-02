@@ -55,6 +55,17 @@ export const updateInterestedList = /* GraphQL */ `
   }
 `;
 
+export const createInterestedList = /* GraphQL */ `
+  mutation CreateInterestedList(
+    $input: CreateInterestedListInput!
+  ) {
+    createInterestedList(input: $input) {
+      id
+      list
+    }
+  }
+`;
+
 export const createInterestedInfo = /* GraphQL */ `
   mutation CreateInterestedInfo(
     $input: CreateInterestedInfoInput!

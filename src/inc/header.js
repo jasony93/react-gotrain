@@ -1,12 +1,14 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { Router, Route, Link, Switch } from 'react-router-dom';
 import '../App.css';
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify'
 import { Auth } from 'aws-amplify';
 import Modal from 'react-awesome-modal';
-import {updateInterestedList, createInterestedInfo} from '../graphql/mutations'
+import {updateInterestedList, createInterestedInfo, createInterestedList} from '../graphql/mutations'
 import {getInterestedList} from '../graphql/queries'
+import AWS from 'aws-sdk'
+
 
 async function signOut() {
 
@@ -30,10 +32,24 @@ async function getUsername() {
     
 }
 
+async function getGroup() {
+
+    try{
+        const user =  await Auth.currentAuthenticatedUser();
+        const groups = user.signInUserSession.accessToken.payload["cognito:groups"]
+        console.log(groups[0])
+        return groups[0]
+      } catch (error) {
+        console.log("failed to get user info")
+    }
+
+}
+
 async function fetchInterestedList() {
 
     try {
-        const id = await getUsername()
+        // const id = await getUsername()
+        const id = await getGroup()
         const variables = {
             id: id
         };
@@ -55,8 +71,26 @@ async function registerInterestedList() {
     }
 
     try {
-        const interestedList = await fetchInterestedList();
-        const id = await getUsername();
+        var interestedList = await fetchInterestedList();
+        // const id = await getUsername();
+        const id = await getGroup()
+
+        if (interestedList == undefined) {
+            console.log("interested list is undefined!")
+            interestedList = [];
+            interestedList.push(inputVal);
+            const variables = {
+                input: {
+                    id: id,
+                    list: interestedList
+                }
+            };
+            await API.graphql(graphqlOperation(createInterestedList, variables))
+
+            return
+        }
+        
+        
         interestedList.push(inputVal);
 
         console.log(id, interestedList)
@@ -119,37 +153,6 @@ async function registerInterestedInfo() {
     // window.location.reload();
 }
 
-async function deleteSelected(selected) {
-
-    console.log(selected)
-
-    if (selected.length === 0) {
-        console.log("please select something")
-        return
-    }
-
-    try {
-        const interestedList = await fetchInterestedList();
-        const id = await getUsername();
-
-        const removedList = interestedList.filter(function(value, index, arr){
-            return !selected.includes(value);
-        })
-
-        const variables = {
-            input: {
-                id: id,
-                list: removedList
-            }
-        };
-        
-        await API.graphql(graphqlOperation(updateInterestedList, variables));
-        
-    } catch (err) { console.log('error registering:', err) }
-
-    window.location.reload();
-}
-
 class header extends Component {
 
     
@@ -161,6 +164,7 @@ class header extends Component {
             visible : false,
             selected : this.props.selected
         }
+
     }
 
     _openModal = () => {
@@ -178,6 +182,7 @@ class header extends Component {
     }
 
   render() {
+
 
     return (
         <div class='header_grid'>
@@ -218,6 +223,7 @@ class header extends Component {
                         </Modal>
                     {/* <input type='button' value='삭제' className='btn_header' onClick={() => {deleteSelected(this.props.selected)}}/> */}
                     <button className='btn_header' onClick={signOut}>로그아웃</button>
+                    <button className='btn_header' onClick={getGroup}>그룹체크</button>
                 </div>
          
             </div>

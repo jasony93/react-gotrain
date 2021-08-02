@@ -171,6 +171,19 @@ async function getUsername() {
   
 }
 
+async function getGroup() {
+
+  try{
+      const user =  await Auth.currentAuthenticatedUser();
+      const groups = user.signInUserSession.accessToken.payload["cognito:groups"]
+      console.log(groups[0])
+      return groups[0]
+    } catch (error) {
+      console.log("failed to get user info")
+  }
+
+}
+
 async function fetchInterestedInfo(code) {
     
   try {
@@ -192,7 +205,8 @@ async function fetchInterestedInfo(code) {
 async function fetchInterestedList() {
 
   try {
-      const id = await getUsername()
+      // const id = await getUsername()
+      const id = await getGroup()
       const variables = {
           id: id
       };
@@ -491,7 +505,8 @@ export default function EnhancedTable(props) {
     console.log('fetchInterestedList started...')
 
     try {
-      const id = await getUsername()
+      // const id = await getUsername()
+      const id = await getGroup()
       const variables = {
         id: id
       };
