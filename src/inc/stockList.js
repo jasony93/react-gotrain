@@ -242,7 +242,7 @@ async function deleteSelected(selected) {
       }
 
       const interestedList = await fetchInterestedList();
-      const id = await getUsername();
+      const id = await getGroup();
 
       const removedList = interestedList.filter(function(value, index, arr){
           return !selected.includes(value);
@@ -277,10 +277,13 @@ async function modifyInterestedInfo() {
   const totalProfit = document.getElementById("modify_total_profit").value;
   const remarks = document.getElementById("modify_remarks").value;
 
+  const companyCode = await getGroup();
+  const infoId = companyCode + "_" + code;
+
   try {
     const variables = {
       input: {
-          id: code,
+          id: infoId,
           createdDate: registerDate,
           cutoffPrice: cutoffPrice,
           port: port,
@@ -310,7 +313,8 @@ const EnhancedTableToolbar = (props) => {
 
   async function _openModal(selected) {
       
-      const info = await fetchInterestedInfo(String(selected))
+      const group = await getGroup();
+      const info = await fetchInterestedInfo(String(group + "_" + selected))
       // console.log("selected: " + selected)
       // console.log("selected: " + info["purchasePrice"])
       console.log("modal info: " + info)
@@ -545,8 +549,13 @@ export default function EnhancedTable(props) {
           dailyChange = "0.00%"
         }
         
-        const code = data["종목코드"].substring(1, data["종목코드"].length)
-        const info = await fetchInterestedInfo(code)
+        const companyCode = await getGroup();
+        const code = data["종목코드"].substring(1, data["종목코드"].length);
+        const infoId = companyCode + "_" + code;
+        const info = await fetchInterestedInfo(infoId)
+
+        console.log("port: " + info["port"])
+        console.log("soldPrice: " + info["soldPrice"])
         
         if (info !== null){
           let currentProfit = '';
@@ -570,7 +579,7 @@ export default function EnhancedTable(props) {
 
           }
           
-
+          
           tempRows.push(createData(data["종목명"], data["현재가"], info["createdDate"], info["port"], info["purchasePrice"], dailyChange, currentProfit, info['soldDate'], info['soldPrice'],
           totalProfit, info['targetPrice'], info['cutoffPrice'], info['weight'], info['targetProfit'], info['remarks'], code))
           // console.log(info)

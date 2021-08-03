@@ -112,6 +112,8 @@ async function registerInterestedList() {
 
 async function registerInterestedInfo() {
 
+    const companyCode = await getGroup();
+
     const code = document.getElementById("register_code").value;
     const registerDate = document.getElementById("register_date").value;
     const port = document.getElementById("register_port").value;
@@ -129,9 +131,11 @@ async function registerInterestedInfo() {
     try {
 
         console.log(code)
+        const id = companyCode + "_" + code
         const variables = {
             input: {
-                id: code,
+                // id: code,
+                id: id,
                 createdDate: registerDate,
                 cutoffPrice: cutoffPrice,
                 port: port,
@@ -150,7 +154,7 @@ async function registerInterestedInfo() {
         
     } catch (err) { console.log('error registering:', err) }
 
-    // window.location.reload();
+    window.location.reload();
 }
 
 class header extends Component {

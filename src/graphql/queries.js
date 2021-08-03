@@ -48,6 +48,7 @@ export const getInterestedInfo = /* GraphQL */ `
       purchasePrice
       remarks
       soldDate
+      soldPrice
       targetPrice
       targetProfit
       totalProfit
